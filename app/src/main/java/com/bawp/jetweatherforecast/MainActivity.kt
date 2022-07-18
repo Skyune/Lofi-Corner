@@ -14,8 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.bawp.jetweatherforecast.navigation.WeatherNavigation
-import com.bawp.jetweatherforecast.screens.MainScreen
+import com.bawp.jetweatherforecast.navigation.WeatherScreens
+import com.bawp.jetweatherforecast.screens.main.MainScreen
 import com.bawp.jetweatherforecast.ui.theme.JetWeatherForecastTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,7 +26,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainScreen()
+            WeatherApp()
 
         }
     }
@@ -39,7 +41,9 @@ fun WeatherApp() {
                 modifier = Modifier.fillMaxSize()) {
                Column(verticalArrangement = Arrangement.Center,
                      horizontalAlignment = Alignment.CenterHorizontally) {
-                   WeatherNavigation()
+                   val navController = rememberNavController()
+
+                   MainScreen(navController = navController)
 
                }
 

@@ -8,6 +8,6 @@ import javax.inject.Singleton
 
 @Singleton
 interface WeatherApi {
-    @GET(value = "/v1/playlists/DOPRl/tracks?app_name=EXAMPLEAPP")
+    @GET(value = "/v1/playlists/MaOAx/tracks?app_name=EXAMPLEAPP")
     suspend fun getWeather(): Weather
 }

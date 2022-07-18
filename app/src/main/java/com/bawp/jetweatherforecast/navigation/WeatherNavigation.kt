@@ -2,18 +2,23 @@ package com.bawp.jetweatherforecast.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.bawp.jetweatherforecast.screens.BottomNavScreen
+import com.bawp.jetweatherforecast.screens.HomeScreen
+import com.bawp.jetweatherforecast.screens.ProfileScreen
+import com.bawp.jetweatherforecast.screens.SettingsScreen
 import com.bawp.jetweatherforecast.screens.main.MainScreen
 import com.bawp.jetweatherforecast.screens.main.MainViewModel
 import com.bawp.jetweatherforecast.screens.splash.WeatherSplashScreen
 
 @Composable
-fun WeatherNavigation() {
-    val navController = rememberNavController()
+fun WeatherNavigation(navController: NavHostController) {
+    //val navController = rememberNavController()
     NavHost(navController = navController,
-        startDestination = WeatherScreens.SplashScreen.name ) {
+        startDestination = BottomNavScreen.Home.route ) {
         composable(WeatherScreens.SplashScreen.name){
             WeatherSplashScreen(navController = navController)
         }
@@ -21,6 +26,15 @@ fun WeatherNavigation() {
         composable(WeatherScreens.MainScreen.name){
             val mainViewModel = hiltViewModel<MainViewModel>()
             MainScreen(navController = navController, mainViewModel)
+        }
+        composable(route = BottomNavScreen.Home.route) {
+            HomeScreen()
+        }
+        composable(route = BottomNavScreen.Profile.route) {
+            ProfileScreen()
+        }
+        composable(route = BottomNavScreen.Settings.route) {
+            SettingsScreen()
         }
 
     }
