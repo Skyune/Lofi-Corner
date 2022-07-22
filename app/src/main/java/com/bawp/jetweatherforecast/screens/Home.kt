@@ -35,7 +35,7 @@ fun HomeScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFC1AEB9)),
+            .background(MaterialTheme.colors.primary),
         contentAlignment = Alignment.Center,
 
     ) {

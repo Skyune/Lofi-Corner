@@ -18,45 +18,49 @@ import androidx.navigation.compose.rememberNavController
 import com.bawp.jetweatherforecast.navigation.WeatherNavigation
 import com.bawp.jetweatherforecast.navigation.WeatherScreens
 import com.bawp.jetweatherforecast.screens.main.MainScreen
-import com.bawp.jetweatherforecast.ui.theme.JetWeatherForecastTheme
+import com.bawp.jetweatherforecast.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var application: WeatherApplication
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            WeatherApp()
+            AppTheme(darkTheme = application.isDark.value) {
+                WeatherApp(onToggleTheme = { application.toggleLightTheme()} )
+            }
 
         }
     }
 }
 
 @Composable
-fun WeatherApp() {
+fun WeatherApp(onToggleTheme: () -> Unit) {
 
-    JetWeatherForecastTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(color = MaterialTheme.colors.background,
-                modifier = Modifier.fillMaxSize()) {
+
                Column(verticalArrangement = Arrangement.Center,
                      horizontalAlignment = Alignment.CenterHorizontally) {
                    val navController = rememberNavController()
 
-                   MainScreen(navController = navController)
+                   MainScreen(navController = navController, onToggleTheme = onToggleTheme)
 
                }
 
         }
-    }
 
-}
+
+
 
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    JetWeatherForecastTheme {
+    AppTheme() {
 
     }
 }

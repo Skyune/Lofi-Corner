@@ -15,7 +15,7 @@ import com.bawp.jetweatherforecast.screens.main.MainViewModel
 import com.bawp.jetweatherforecast.screens.splash.WeatherSplashScreen
 
 @Composable
-fun WeatherNavigation(navController: NavHostController) {
+fun WeatherNavigation(navController: NavHostController, onToggleTheme: () -> Unit) {
     //val navController = rememberNavController()
     NavHost(navController = navController,
         startDestination = BottomNavScreen.Home.route ) {
@@ -25,7 +25,7 @@ fun WeatherNavigation(navController: NavHostController) {
 
         composable(WeatherScreens.MainScreen.name){
             val mainViewModel = hiltViewModel<MainViewModel>()
-            MainScreen(navController = navController, mainViewModel)
+            MainScreen(navController = navController, mainViewModel,onToggleTheme)
         }
         composable(route = BottomNavScreen.Home.route) {
             HomeScreen()
@@ -34,7 +34,7 @@ fun WeatherNavigation(navController: NavHostController) {
             ProfileScreen()
         }
         composable(route = BottomNavScreen.Settings.route) {
-            SettingsScreen()
+            SettingsScreen(onToggleTheme)
         }
 
     }

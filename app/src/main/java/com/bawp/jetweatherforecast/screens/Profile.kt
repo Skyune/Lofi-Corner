@@ -1,5 +1,6 @@
 package com.bawp.jetweatherforecast.screens
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,17 +25,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import coil.size.OriginalSize
+import com.bawp.jetweatherforecast.WeatherApplication
 import com.bawp.jetweatherforecast.data.DataOrException
 import com.bawp.jetweatherforecast.model.Data
 import com.bawp.jetweatherforecast.model.Weather
 import com.bawp.jetweatherforecast.screens.main.MainViewModel
+import javax.inject.Inject
+
 
 @Composable
 fun ProfileScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Blue),
+            .background(MaterialTheme.colors.primary),
         contentAlignment = Alignment.Center
     ) {
 
