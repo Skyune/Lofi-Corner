@@ -31,8 +31,12 @@ import com.bawp.jetweatherforecast.widgets.LofiAppBar
 
 
 @Composable
-fun MainScreen(navController: NavController,
-               mainViewModel: MainViewModel = hiltViewModel(), onToggleTheme: () -> Unit) {
+fun MainScreen(
+    navController: NavController,
+    mainViewModel: MainViewModel = hiltViewModel(),
+    onToggleTheme: () -> Unit,
+    onToggleDarkMode: () -> Unit
+) {
     val navController = rememberNavController()
     Scaffold(
         topBar = {
@@ -43,7 +47,7 @@ fun MainScreen(navController: NavController,
         },
         bottomBar = { BottomBar(navController = navController) }
     ) {
-        WeatherNavigation(navController = navController, onToggleTheme)
+        WeatherNavigation(navController = navController, onToggleTheme, onToggleDarkMode)
     }
 
 

@@ -1,9 +1,12 @@
 package com.bawp.jetweatherforecast.di
 
 import android.content.Context
+import androidx.room.Room
 import com.bawp.jetweatherforecast.WeatherApplication
 import com.bawp.jetweatherforecast.network.WeatherApi
 import com.bawp.jetweatherforecast.utils.Constants
+import com.example.cleannote.data.NoteDatabase
+import com.example.cleannote.data.NoteDatabaseDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,6 +19,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
+
 
     @Provides
     @Singleton
@@ -33,4 +37,17 @@ class AppModule {
         return app as WeatherApplication
     }
 
+    @Singleton
+    @Provides
+    fun provideNotesDao(noteDatabase: NoteDatabase): NoteDatabaseDao
+            = noteDatabase.noteDao()
+
+    @Singleton
+    @Provides
+    fun provideAppDatabase(@ApplicationContext context: Context): NoteDatabase
+            = Room.databaseBuilder(
+        context,
+        NoteDatabase::class.java,
+        "notes_db"
+    ).fallbackToDestructiveMigration().build()
 }

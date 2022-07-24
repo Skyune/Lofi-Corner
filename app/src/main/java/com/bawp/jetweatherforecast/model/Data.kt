@@ -1,6 +1,10 @@
 package com.bawp.jetweatherforecast.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 data class Data(
+
     val artwork: Artwork,
     val description: String,
     val downloadable: Boolean,

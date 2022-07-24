@@ -5,20 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.bawp.jetweatherforecast.navigation.WeatherNavigation
-import com.bawp.jetweatherforecast.navigation.WeatherScreens
 import com.bawp.jetweatherforecast.screens.main.MainScreen
 import com.bawp.jetweatherforecast.ui.theme.AppTheme
+import com.bawp.jetweatherforecast.ui.theme.Theme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -31,36 +24,31 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AppTheme(darkTheme = application.isDark.value) {
-                WeatherApp(onToggleTheme = { application.toggleLightTheme()} )
+            AppTheme(theme = application.currentTheme.value) {
+                WeatherApp(onToggleTheme = { application.changeTheme(Theme.Light)},
+                    onToggleDarkMode = { application.changeTheme(Theme.Dark)})
             }
 
         }
     }
 }
 
+//This is a bullshit way to do this, but I don't know how to do it better
 @Composable
-fun WeatherApp(onToggleTheme: () -> Unit) {
+fun WeatherApp(onToggleTheme: () -> Unit, onToggleDarkMode: () -> Unit) {
 
 
                Column(verticalArrangement = Arrangement.Center,
                      horizontalAlignment = Alignment.CenterHorizontally) {
                    val navController = rememberNavController()
 
-                   MainScreen(navController = navController, onToggleTheme = onToggleTheme)
-
+                   MainScreen(navController = navController, onToggleTheme = onToggleTheme, onToggleDarkMode = onToggleDarkMode)
                }
-
-        }
-
-
-
-
-
+}
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    AppTheme() {
+    AppTheme(theme = Theme.Dark) {
 
     }
 }

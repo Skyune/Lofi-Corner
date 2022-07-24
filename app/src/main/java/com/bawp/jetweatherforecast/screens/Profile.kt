@@ -1,9 +1,9 @@
 package com.bawp.jetweatherforecast.screens
 
-import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,39 +11,31 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
-import coil.size.OriginalSize
-import com.bawp.jetweatherforecast.WeatherApplication
 import com.bawp.jetweatherforecast.data.DataOrException
+import com.bawp.jetweatherforecast.model.CurrentSong
 import com.bawp.jetweatherforecast.model.Data
 import com.bawp.jetweatherforecast.model.Weather
-import com.bawp.jetweatherforecast.screens.main.MainViewModel
-import javax.inject.Inject
 
 
 @Composable
 fun ProfileScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
-
-
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .height(240.dp)
             .background(MaterialTheme.colors.primary),
         contentAlignment = Alignment.Center
     ) {
-
         ShowData(profileViewModel)
     }
 }
@@ -66,10 +58,13 @@ fun ShowData(profileViewModel: ProfileViewModel) {
         if (weatherData.loading == true) {
             CircularProgressIndicator()
         } else if (weatherData.data != null) {
-
             LazyColumn(modifier = Modifier.padding(2.dp), contentPadding = PaddingValues(1.dp)) {
-                items(weatherData.data!!.data) { item ->
-                    WeatherItem(item)
+                items(weatherData.data!!.data ) { item ->
+                    //wait... is this a bad idea to save every song in a room database?
+                    //its not a bug its a feature
+                    //you can probably implement previous and next buttons for LITERALLY every song played.
+                    WeatherItem(item, onItemClicked = {profileViewModel.addNote(CurrentSong(item.id, item.duration,item.title))
+                        Log.d("TAG", "ShowData: ${CurrentSong(item.id, item.duration,item.title)}")})
                     }
                 }
             }
@@ -79,10 +74,11 @@ fun ShowData(profileViewModel: ProfileViewModel) {
 
 
 @Composable
-fun WeatherItem(item: Data) {
+fun WeatherItem(item: Data, onItemClicked: () -> Unit) {
     Surface(modifier = Modifier
         .padding(2.dp)
-        .fillMaxWidth(),
+        .fillMaxWidth()
+        .clickable { onItemClicked() },
         color = Color(0xFFCDBEC8),
         shape = RoundedCornerShape(4.dp)) {
         Row() {

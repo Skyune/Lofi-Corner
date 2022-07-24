@@ -2,11 +2,14 @@ package com.bawp.jetweatherforecast.repository
 
 import android.util.Log
 import com.bawp.jetweatherforecast.data.DataOrException
+import com.bawp.jetweatherforecast.model.CurrentSong
+import com.bawp.jetweatherforecast.model.Data
 import com.bawp.jetweatherforecast.model.Weather
 import com.bawp.jetweatherforecast.network.WeatherApi
+import com.example.cleannote.data.NoteDatabaseDao
 import javax.inject.Inject
 
-class WeatherRepository @Inject constructor(private val api: WeatherApi) {
+class WeatherRepository @Inject constructor(private val api: WeatherApi, private val noteDatabaseDao: NoteDatabaseDao) {
 
     suspend fun getWeather()
     :DataOrException<Weather, Boolean, Exception>  {
@@ -21,5 +24,7 @@ class WeatherRepository @Inject constructor(private val api: WeatherApi) {
         return  DataOrException(data = response)
 
     }
+
+    suspend fun addNote(currentSong: CurrentSong) = noteDatabaseDao.insert(currentSong)
 
 }
