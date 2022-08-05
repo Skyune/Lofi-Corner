@@ -9,11 +9,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract  interface NoteDatabaseDao {
 
-//    @Query("SELECT * from NOTES_TBL")
-//    fun getNotes(): Flow<List<CurrentSong>>
+    @Query("SELECT * from NOTES_TBL")
+    fun getNotes(): Flow<List<CurrentSong>>
+
+    @Query("SELECT * FROM NOTES_TBL ORDER BY id DESC LIMIT 1" )
+    fun getLatest(): Flow<List<CurrentSong>>
 //
-//    @Query("SELECT * from NOTES_TBL where id =:id")
-//    suspend fun getNotesById(id:String): ContactsContract.CommonDataKinds.Note
+//    @Query("SELECT * from NOTES_TBL where id = MAX(id)")
+//    suspend fun getNotesById(id:String): String
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(song: CurrentSong)

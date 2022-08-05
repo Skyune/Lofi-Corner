@@ -8,8 +8,9 @@ import java.util.*
 
 @Entity(tableName = "notes_tbl")
 data class CurrentSong (
-    @PrimaryKey
-    val id: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val name: String,
     @ColumnInfo(name = "song_duration")
     val duration: Int,
     @ColumnInfo(name = "song_name")

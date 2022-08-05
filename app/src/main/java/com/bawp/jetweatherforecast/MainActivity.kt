@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//This is a bullshit way to do this, but I don't know how to do it better
+//this is probably a bad way to implement the theming, going to improve on this later.
 @Composable
 fun WeatherApp(onToggleTheme: () -> Unit, onToggleDarkMode: () -> Unit) {
 

@@ -7,6 +7,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightThemeColors = lightColors(
     primary = Color.Red,
@@ -84,12 +85,17 @@ enum class Theme {
 @Composable
 fun AppTheme(theme: Theme,
              content: @Composable() () -> Unit) {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(
+        color = Color(0xFFBA98AC)
+    )
     val colors = when (theme) {
         Theme.Light -> PinkRoomTheme
         Theme.Dark -> LightThemeColors
         else -> LightThemeColors
     }
     MaterialTheme(
+
         colors = colors,
         typography = MaterialTheme.typography,
         shapes = MaterialTheme.shapes,

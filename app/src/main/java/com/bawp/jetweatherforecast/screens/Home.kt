@@ -3,18 +3,25 @@ package com.bawp.jetweatherforecast.screens
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
@@ -27,8 +34,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.bawp.jetweatherforecast.R
+import com.bawp.jetweatherforecast.model.Data
+import com.bawp.jetweatherforecast.widgets.RoomImage
+import com.bawp.jetweatherforecast.widgets.RoundIconButton
 import kotlinx.coroutines.delay
+import org.intellij.lang.annotations.JdkConstants
 
 @Composable
 fun HomeScreen() {
@@ -39,10 +53,34 @@ fun HomeScreen() {
         contentAlignment = Alignment.Center,
 
     ) {
-        Column(modifier = Modifier.fillMaxSize().padding(30.dp,0.dp,30.dp,4.dp),
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            RoomImage(
+                modifier = Modifier.weight(1f),
+                ImageId = R.drawable.rockstar,
+                onClick = { /*TODO*/ },
+                roomTitle = "The Rockstar",
+            )
+            RoomImage(
+                modifier = Modifier.weight(1f),
+
+                ImageId = R.drawable.jazz,
+                onClick = { /*TODO*/ },
+                roomTitle = "Jazz Enthusiast"
+            )
+            RoomImage(
+                modifier = Modifier.weight(1f),
+
+                ImageId = R.drawable.untitled,
+                onClick = { /*TODO*/ },
+                roomTitle = "The Delinquent"
+            )
+        }
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(30.dp, 0.dp, 30.dp, 4.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(painter = painterResource(id = R.drawable.jazz), contentDescription = "jazzy" )
+            //Image(painter = painterResource(id = R.drawable.jazz), contentDescription = "jazzy" )
             MarqueeText("Lorem", gradientEdgeColor = Color(0xFFFFC1AEB9))
 
         }
@@ -167,6 +205,30 @@ fun MarqueeText(
                 it.first.place(it.second, 0)
             }
             gradient?.place(0, 0)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun WeatherItem() {
+    Surface(modifier = Modifier
+        .padding(2.dp)
+        .fillMaxWidth()
+        .height(60.dp),
+
+
+        color = Color(0xFFCDBEC8),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Row(modifier = Modifier,Arrangement.Center, Alignment.CenterVertically) {
+            Column(modifier = Modifier.padding(4.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.Start) {
+                Text(text = "String", fontFamily = FontFamily.Default, fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+                Text(text = "Author", fontFamily = FontFamily.Default, fontSize = 12.sp, color = Color.Gray)
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            RoundIconButton(modifier = Modifier, imageVector = Icons.Default.PlayArrow, onClick = { /*TODO*/ })
+
         }
     }
 }

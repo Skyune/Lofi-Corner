@@ -21,10 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
+import com.bawp.jetweatherforecast.R
 import com.bawp.jetweatherforecast.data.DataOrException
 import com.bawp.jetweatherforecast.model.CurrentSong
 import com.bawp.jetweatherforecast.model.Data
 import com.bawp.jetweatherforecast.model.Weather
+import com.bawp.jetweatherforecast.widgets.RoomImage
+import java.sql.Types.NULL
 
 
 @Composable
@@ -63,15 +66,14 @@ fun ShowData(profileViewModel: ProfileViewModel) {
                     //wait... is this a bad idea to save every song in a room database?
                     //its not a bug its a feature
                     //you can probably implement previous and next buttons for LITERALLY every song played.
-                    WeatherItem(item, onItemClicked = {profileViewModel.addNote(CurrentSong(item.id, item.duration,item.title))
-                        Log.d("TAG", "ShowData: ${CurrentSong(item.id, item.duration,item.title)}")})
+                    WeatherItem(item, onItemClicked = {profileViewModel.addNote(CurrentSong(NULL,item.id, item.duration,item.title))
+                        Log.d("TAG", "ShowData: ${CurrentSong(NULL,item.id, item.duration,item.title)}")})
                     }
                 }
             }
             //Log.d("apicallback", "ShowData: ${weatherData.data!!.data.toString()}")
         }
     }
-
 
 @Composable
 fun WeatherItem(item: Data, onItemClicked: () -> Unit) {
