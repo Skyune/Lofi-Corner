@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightThemeColors = lightColors(
-    primary = Color.Red,
+    primary = JazzMainScreen,
     primaryVariant = Blue400,
     onPrimary = Black2,
     secondary = Color.White,

@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bawp.jetweatherforecast.R
 import org.intellij.lang.annotations.JdkConstants
 
@@ -30,7 +31,7 @@ fun RoomImage(
     onClick: () -> Unit,
     roomTitle: String) {
     Box(modifier = modifier.fillMaxWidth()
-        .padding(all = 1.dp)
+        .padding(all = 4.dp)
         .clickable {
             onClick.invoke()
         }, ) {
@@ -56,7 +57,7 @@ fun RoomImage(
 //                            onClick = { /*TODO*/ })
 //                    }
                 }
-                Text(text = roomTitle, modifier = Modifier.padding(vertical = 10.dp))
+                Text(text = roomTitle, modifier = Modifier.padding(vertical = 10.dp), fontSize = 12.sp)
 
             }
         }

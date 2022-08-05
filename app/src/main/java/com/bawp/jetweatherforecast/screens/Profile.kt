@@ -34,7 +34,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(240.dp)
+            .fillMaxHeight()
             .background(MaterialTheme.colors.primary),
         contentAlignment = Alignment.Center
     ) {
@@ -55,7 +55,7 @@ fun ShowData(profileViewModel: ProfileViewModel, songList: List<CurrentSong>) {
 
     Box(
         modifier = Modifier
-            .fillMaxWidth().height(240.dp)
+            .fillMaxWidth().fillMaxHeight()
             .background(Color(0xFFC1AEB9)),
         contentAlignment = Alignment.Center,
 
@@ -65,6 +65,9 @@ fun ShowData(profileViewModel: ProfileViewModel, songList: List<CurrentSong>) {
             CircularProgressIndicator()
         } else if (weatherData.data != null) {
             LazyColumn(modifier = Modifier.padding(2.dp), contentPadding = PaddingValues(1.dp)) {
+                item {
+                    Text(text = "First item")
+                }
                 items(weatherData.data!!.data) { item ->
                     //wait... is this a bad idea to save every song in a room database?
                     //its not a bug its a feature
@@ -79,16 +82,14 @@ fun ShowData(profileViewModel: ProfileViewModel, songList: List<CurrentSong>) {
                             )
                         )
 
-                        // CurrentSong(NULL, item.id, item.duration, item.title)
                     })
                 }
 
             }
             //progress i guess
-            Text(text = "help")
-            songList.forEach {
-                Text(text = it.title)
-            }
+            if(songList.isNotEmpty())
+            Text(songList.last().title)
+
         }
 
         //Log.d("apicallback", "ShowData: ${weatherData.data!!.data.toString()}")

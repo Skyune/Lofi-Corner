@@ -6,14 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
@@ -22,12 +23,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -44,6 +48,7 @@ import com.bawp.jetweatherforecast.widgets.RoundIconButton
 import kotlinx.coroutines.delay
 import org.intellij.lang.annotations.JdkConstants
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeScreen() {
     Box(
@@ -53,30 +58,42 @@ fun HomeScreen() {
         contentAlignment = Alignment.Center,
 
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            RoomImage(
-                modifier = Modifier.weight(1f),
-                ImageId = R.drawable.rockstar,
-                onClick = { /*TODO*/ },
-                roomTitle = "The Rockstar",
-            )
-            RoomImage(
-                modifier = Modifier.weight(1f),
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text("Your Lofi Corner,",
+                style = MaterialTheme.typography.h4, fontWeight = FontWeight.Bold,
+            fontSize= 20.sp)
+            Text("What would you like to listen to?",fontSize= 16.sp,color = Color.Gray)
+            SearchBar()
+            Row(modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)) {
+                Text("Rooms", fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.weight(1f))
+                Text("Show All")
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                RoomImage(
+                    modifier = Modifier.weight(1f),
+                    ImageId = R.drawable.rockstar,
+                    onClick = { /*TODO*/ },
+                    roomTitle = "The Rockstar",
+                )
+                RoomImage(
+                    modifier = Modifier.weight(1f),
 
-                ImageId = R.drawable.jazz,
-                onClick = { /*TODO*/ },
-                roomTitle = "Jazz Enthusiast"
-            )
-            RoomImage(
-                modifier = Modifier.weight(1f),
-                ImageId = R.drawable.untitled,
-                onClick = { /*TODO*/ },
-                roomTitle = "The Delinquent"
-            )
+                    ImageId = R.drawable.jazz,
+                    onClick = { /*TODO*/ },
+                    roomTitle = "Jazz Enthusiast"
+                )
+                RoomImage(
+                    modifier = Modifier.weight(1f),
+                    ImageId = R.drawable.untitled,
+                    onClick = { /*TODO*/ },
+                    roomTitle = "The Delinquent"
+                )
+            }
         }
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(30.dp, 0.dp, 30.dp, 4.dp),
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(30.dp, 0.dp, 30.dp, 4.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
             //Image(painter = painterResource(id = R.drawable.jazz), contentDescription = "jazzy" )
@@ -84,6 +101,56 @@ fun HomeScreen() {
 
         }
     }
+}
+@ExperimentalComposeUiApi
+@Composable
+fun SearchBar(
+    modifier: Modifier = Modifier,
+    onSearch: (String) -> Unit = {}) {
+    val searchQueryState = rememberSaveable { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val valid = remember(searchQueryState.value){
+        searchQueryState.value.trim().isNotEmpty()
+    }
+
+    Column {
+        CommonTextField(
+            valueState = searchQueryState,
+            placeholder = "Search for playlists",
+            onAction = KeyboardActions {
+                if (!valid) return@KeyboardActions
+                onSearch(searchQueryState.value.trim())
+                searchQueryState.value = ""
+                keyboardController?.hide()
+            })
+
+    }
+
+}
+
+@Composable
+fun CommonTextField(valueState: MutableState<String>,
+                    placeholder: String,
+                    keyboardType: KeyboardType = KeyboardType.Text,
+                    imeAction: ImeAction = ImeAction.Next,
+                    onAction: KeyboardActions = KeyboardActions.Default) {
+    OutlinedTextField(
+        value = valueState.value,
+        onValueChange = { valueState.value = it},
+        label = { Text(text = placeholder)},
+        maxLines = 1,
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+        keyboardActions = onAction,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color.Blue,
+            cursorColor = Color.Black),
+        shape = RoundedCornerShape(15.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            )
+
+
 }
 
 @Composable

@@ -46,7 +46,7 @@ fun MainScreen(
     val navController = rememberNavController()
     Scaffold(
         topBar = {
-            LofiAppBar(title = "Lofi Corner", navController = navController, onAddActionClicked = {}) {
+            LofiAppBar(title = "", navController = navController, onAddActionClicked = {}) {
                 //trailing lambda
                 Log.d("TAG", "MainScreen: button clicked")
             }
