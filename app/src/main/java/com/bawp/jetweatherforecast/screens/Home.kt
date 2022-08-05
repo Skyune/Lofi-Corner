@@ -69,7 +69,6 @@ fun HomeScreen() {
             )
             RoomImage(
                 modifier = Modifier.weight(1f),
-
                 ImageId = R.drawable.untitled,
                 onClick = { /*TODO*/ },
                 roomTitle = "The Delinquent"

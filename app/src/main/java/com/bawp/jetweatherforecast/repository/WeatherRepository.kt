@@ -25,6 +25,7 @@ class WeatherRepository @Inject constructor(private val api: WeatherApi, private
 
     }
 
+
     suspend fun addNote(currentSong: CurrentSong) = noteDatabaseDao.insert(currentSong)
     suspend fun getAllNotes() = noteDatabaseDao.getNotes()
     suspend fun getLatestNote() = noteDatabaseDao.getLatest()

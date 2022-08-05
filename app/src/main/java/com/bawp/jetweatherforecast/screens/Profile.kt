@@ -1,6 +1,5 @@
 package com.bawp.jetweatherforecast.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,10 +9,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.Help
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,12 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
-import com.bawp.jetweatherforecast.R
 import com.bawp.jetweatherforecast.data.DataOrException
 import com.bawp.jetweatherforecast.model.CurrentSong
 import com.bawp.jetweatherforecast.model.Data
 import com.bawp.jetweatherforecast.model.Weather
-import com.bawp.jetweatherforecast.widgets.RoomImage
 import java.sql.Types.NULL
 
 
@@ -39,41 +38,73 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = hiltViewModel()) {
             .background(MaterialTheme.colors.primary),
         contentAlignment = Alignment.Center
     ) {
-        ShowData(profileViewModel)
+        val songList = profileViewModel.noteList.collectAsState().value
+        ShowData(profileViewModel, songList)
     }
 }
 
 @Composable
-fun ShowData(profileViewModel: ProfileViewModel) {
+fun ShowData(profileViewModel: ProfileViewModel, songList: List<CurrentSong>) {
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
         initialValue = DataOrException(loading = true)
     ) {
         value = profileViewModel.getWeatherData()
     }.value
 
+
+
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth().height(240.dp)
             .background(Color(0xFFC1AEB9)),
         contentAlignment = Alignment.Center,
 
         ) {
+
         if (weatherData.loading == true) {
             CircularProgressIndicator()
         } else if (weatherData.data != null) {
             LazyColumn(modifier = Modifier.padding(2.dp), contentPadding = PaddingValues(1.dp)) {
-                items(weatherData.data!!.data ) { item ->
+                items(weatherData.data!!.data) { item ->
                     //wait... is this a bad idea to save every song in a room database?
                     //its not a bug its a feature
                     //you can probably implement previous and next buttons for LITERALLY every song played.
-                    WeatherItem(item, onItemClicked = {profileViewModel.addNote(CurrentSong(NULL,item.id, item.duration,item.title))
-                        Log.d("TAG", "ShowData: ${CurrentSong(NULL,item.id, item.duration,item.title)}")})
-                    }
+                    WeatherItem(item, onItemClicked = {
+                        profileViewModel.addNote(
+                            CurrentSong(
+                                NULL,
+                                item.id,
+                                item.duration,
+                                item.title
+                            )
+                        )
+
+                        // CurrentSong(NULL, item.id, item.duration, item.title)
+                    })
                 }
+
             }
-            //Log.d("apicallback", "ShowData: ${weatherData.data!!.data.toString()}")
+            //progress i guess
+            Text(text = "help")
+            songList.forEach {
+                Text(text = it.title)
+            }
         }
+
+        //Log.d("apicallback", "ShowData: ${weatherData.data!!.data.toString()}")
     }
+
+
+
+    }
+
+
+
+
+
+
+
+
 
 @Composable
 fun WeatherItem(item: Data, onItemClicked: () -> Unit) {
