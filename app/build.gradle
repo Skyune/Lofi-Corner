@@ -66,6 +66,10 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0-beta01"
     annotationProcessor "com.google.dagger:dagger-android-processor:2.11"
 
+    //a little fun effect for image
+    //its 3:00 and am sleepy so careful with this
+    implementation "com.github.yeocak:ComposableParallaxImage:0.5"
+
     //material icons - use with caution!
     // implementation "androidx.compose.material:material-icons-extended:$compose_version"
     // Coroutines
@@ -100,7 +104,7 @@ dependencies {
 
     //accompanist
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
-
+    implementation "com.google.accompanist:accompanist-insets-ui:0.23.1"
 
 
     implementation 'androidx.core:core-ktx:1.7.0'

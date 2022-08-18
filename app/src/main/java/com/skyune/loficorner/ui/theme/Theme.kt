@@ -8,10 +8,10 @@ import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightThemeColors = lightColors(
-    primary = JazzMainScreen,
-    primaryVariant = Blue400,
-    onPrimary = Black2,
-    secondary = Color.White,
+    primary = JazzMainScreenPrimary,
+    primaryVariant = JazzMainScreenPrimaryVariant,
+    onPrimary = Color.White,
+    secondary = JazzMainScreenSecondary,
     secondaryVariant = Teal300,
     onSecondary = Black1,
     error = RedErrorDark,
@@ -22,11 +22,11 @@ private val LightThemeColors = lightColors(
     onSurface = Black1,
 )
 
-private val PinkRoomTheme = lightColors(
-    primary = Color.Cyan,
-    primaryVariant = Blue400,
-    onPrimary = Black2,
-    secondary = Color.White,
+private val JazzRoomTheme = lightColors(
+    primary = JazzMainScreenPrimary,
+    primaryVariant = JazzMainScreenPrimaryVariant,
+    onPrimary = Color.White,
+    secondary = JazzMainScreenSecondary,
     secondaryVariant = Teal300,
     onSecondary = Black1,
     error = RedErrorDark,
@@ -38,10 +38,10 @@ private val PinkRoomTheme = lightColors(
 )
 
 private val DarkThemeColors = darkColors(
-    primary = JazzMainScreen,
-    primaryVariant = Color.White,
+    primary = JazzMainScreenPrimary,
+    primaryVariant = JazzMainScreenPrimaryVariant,
     onPrimary = Color.White,
-    secondary = Black1,
+    secondary = JazzMainScreenSecondary,
     onSecondary = Color.White,
     error = RedErrorLight,
     background = Color.Black,
@@ -50,10 +50,10 @@ private val DarkThemeColors = darkColors(
     onSurface = Color.White,
 )
 private val RainbowTheme = darkColors(
-    primary = JazzMainScreen,
-    primaryVariant = Color.White,
+    primary = JazzMainScreenPrimary,
+    primaryVariant = JazzMainScreenPrimaryVariant,
     onPrimary = Color.White,
-    secondary = Black1,
+    secondary = JazzMainScreenSecondary,
     onSecondary = Color.White,
     error = RedErrorLight,
     background = Color.Black,
@@ -88,7 +88,7 @@ fun AppTheme(theme: Theme,
         color = Color(0xFFBA98AC)
     )
     val colors = when (theme) {
-        Theme.Light -> PinkRoomTheme
+        Theme.Light -> JazzRoomTheme
         Theme.Dark -> LightThemeColors
         else -> LightThemeColors
     }

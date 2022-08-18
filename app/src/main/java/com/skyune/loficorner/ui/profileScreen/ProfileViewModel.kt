@@ -1,4 +1,4 @@
-package com.skyune.loficorner.ui
+package com.skyune.loficorner.ui.profileScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,6 +6,7 @@ import com.skyune.loficorner.data.DataOrException
 import com.skyune.loficorner.model.CurrentSong
 import com.skyune.loficorner.model.Weather
 import com.skyune.loficorner.repository.WeatherRepository
+import com.yeocak.parallaximage.GravitySensorDefaulted
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -45,6 +46,9 @@ class ProfileViewModel @Inject constructor(private val repository: WeatherReposi
         }
         //noteList.addAll(NotesDataSource().loadNotes())
     }
+
+
+
 
     fun addNote(song: CurrentSong) = viewModelScope.launch { repository.addNote(song) }
     //fun getNotes() = viewModelScope.launch {  repository.getLatestNote() }

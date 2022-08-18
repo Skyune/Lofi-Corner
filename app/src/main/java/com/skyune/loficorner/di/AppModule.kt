@@ -1,6 +1,7 @@
 package com.skyune.loficorner.di
 
 import android.content.Context
+import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.instance
 import androidx.room.Room
 import com.skyune.loficorner.WeatherApplication
 import com.skyune.loficorner.network.WeatherApi
@@ -9,6 +10,7 @@ import com.example.cleannote.data.NoteDatabase
 import com.example.cleannote.data.NoteDatabaseDao
 import com.skyune.loficorner.exoplayer.MusicServiceConnection
 import com.skyune.loficorner.exoplayer.MusicSource
+import com.yeocak.parallaximage.GravitySensorDefaulted
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,6 +36,8 @@ class AppModule {
     @Provides
     fun provideMusicSource(
     ) = MusicSource()
+
+
 
     @Provides
     @Singleton

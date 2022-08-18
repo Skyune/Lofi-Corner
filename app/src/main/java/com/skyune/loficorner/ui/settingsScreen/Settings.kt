@@ -1,10 +1,7 @@
-package com.skyune.loficorner.ui
+package com.skyune.loficorner.ui.settingsScreen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -16,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.yeocak.parallaximage.ParallaxImage
 
 @Composable
 fun SettingsScreen(onToggleTheme: () -> Unit, onToggleDarkMode: () -> Unit) {
@@ -49,6 +47,7 @@ fun SettingsScreen(onToggleTheme: () -> Unit, onToggleDarkMode: () -> Unit) {
         }
     }
 }
+
 
 
 @Composable

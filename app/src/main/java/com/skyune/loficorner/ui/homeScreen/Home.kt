@@ -1,4 +1,4 @@
-package com.skyune.loficorner.ui
+package com.skyune.loficorner.ui.homeScreen
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -35,8 +35,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.skyune.loficorner.R
-import com.skyune.loficorner.ui.theme.JazzBottomNavColor
-import com.skyune.loficorner.ui.theme.JazzMainScreen
+
 import com.skyune.loficorner.widgets.RoomImage
 import com.skyune.loficorner.widgets.RoundIconButton
 import kotlinx.coroutines.delay
@@ -44,57 +43,24 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = JazzMainScreen),
-        contentAlignment = Alignment.Center,
 
-    ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            Text("Your Lofi Corner,",
-                style = MaterialTheme.typography.h4, fontWeight = FontWeight.Bold,
-            fontSize= 20.sp)
-            Text("What would you like to listen to?",fontSize= 16.sp,color = Color.Black)
-            SearchBar(modifier = Modifier.height(30.dp))
-            Row(modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)) {
-                Text("Rooms", fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.weight(1f))
-                Text("Show All")
-            }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                RoomImage(
-                    modifier = Modifier.weight(1f),
-                    ImageId = R.drawable.rockstar,
-                    onClick = { /*TODO*/ },
-                    roomTitle = "The Rockstar",
-                )
-                RoomImage(
-                    modifier = Modifier.weight(1f),
-
-                    ImageId = R.drawable.jazz,
-                    onClick = { /*TODO*/ },
-                    roomTitle = "Jazz Enthusiast"
-                )
-                RoomImage(
-                    modifier = Modifier.weight(1f),
-                    ImageId = R.drawable.untitled,
-                    onClick = { /*TODO*/ },
-                    roomTitle = "The Delinquent"
-                )
-            }
-        }
             Column(modifier = Modifier
                 .fillMaxSize()
                 .padding(30.dp, 0.dp, 30.dp, 4.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
-            //Image(painter = painterResource(id = R.drawable.jazz), contentDescription = "jazzy" )
+
+
+
+
+
+                    //Image(painter = painterResource(id = R.drawable.jazz), contentDescription = "jazzy" )
             MarqueeText("Lorem", gradientEdgeColor = Color(0xFFFFC1AEB9))
 
         }
+
     }
-}
+
 @ExperimentalComposeUiApi
 @Composable
 fun SearchBar(
@@ -138,9 +104,10 @@ fun CommonTextField(
         keyboardActions = onAction,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color.Blue,
-            cursorColor = JazzBottomNavColor),
+            cursorColor = Color.Blue,),
         shape = RoundedCornerShape(15.dp),
-        modifier = Modifier.height(60.dp)
+        modifier = Modifier
+            .height(60.dp)
             .fillMaxWidth(),
             )
 
@@ -269,7 +236,7 @@ fun MarqueeText(
     }
 }
 
-@Preview
+
 @Composable
 fun WeatherItem() {
     Surface(modifier = Modifier
@@ -312,8 +279,8 @@ private fun GradientEdge(
 private enum class MarqueeLayers { MainText, SecondaryText, EdgesGradient }
 private data class TextLayoutInfo(val textWidth: Int, val containerWidth: Int)
 
-@Composable
 @Preview
+@Composable
 fun HomeScreenPreview() {
     HomeScreen()
 }

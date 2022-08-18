@@ -1,15 +1,21 @@
-package com.skyune.loficorner.ui.main
+package com.skyune.loficorner.ui.mainScreen
 
-import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,7 +29,8 @@ import androidx.navigation.compose.rememberNavController
 import com.skyune.loficorner.exoplayer.MusicServiceConnection
 import com.skyune.loficorner.navigation.WeatherNavigation
 import com.skyune.loficorner.ui.BottomNavScreen
-import com.skyune.loficorner.widgets.LofiAppBar
+import com.yeocak.parallaximage.GravitySensorDefaulted
+
 
 
 @Composable
@@ -32,57 +39,79 @@ fun MainScreen(
     mainViewModel: MainViewModel = hiltViewModel(),
     onToggleTheme: () -> Unit,
     onToggleDarkMode: () -> Unit,
-    musicServiceConnection: MusicServiceConnection
+    musicServiceConnection: MusicServiceConnection,
+    gravitySensorDefaulted: GravitySensorDefaulted
 ) {
+
     val navController = rememberNavController()
-    Scaffold(
-        topBar = {
-            LofiAppBar(title = "", navController = navController, onAddActionClicked = {}) {
-                //trailing lambda
-                Log.d("TAG", "MainScreen: button clicked")
-            }
-        },
-        bottomBar = { BottomBar(navController = navController) }
+
+    val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
+
+
+    //Scaffold from Accompanist, initialized in build.gradle. (for hide bottom bar support)
+    com.google.accompanist.insets.ui.Scaffold(
+        bottomBar = { BottomBar(navController = navController, bottomBarState)  }
     ) {
-        WeatherNavigation(navController = navController, onToggleTheme, onToggleDarkMode, musicServiceConnection)
+
+            WeatherNavigation(navController = navController,
+                onToggleTheme,
+                onToggleDarkMode,
+                musicServiceConnection,
+                gravitySensorDefaulted,
+                bottomBarState)
+
     }
 
 
 }
 
 @Composable
-fun BottomBar(navController: NavHostController, mainViewModel: MainViewModel = hiltViewModel()) {
+fun BottomBar(navController: NavHostController, bottomBarState: MutableState<Boolean>) {
     val screens = listOf(
         BottomNavScreen.Home,
         BottomNavScreen.Profile,
         BottomNavScreen.Settings,
     )
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
 
 
-        Card(
-            modifier = Modifier
-                .clip(shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp),)
-                .height(50.dp)
-                .fillMaxWidth(), backgroundColor = MaterialTheme.colors.background
-        ) {
-        }
+//        Card(
+//            modifier = Modifier
+//                .clip(shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
+//                .height(50.dp)
+//                .fillMaxWidth(), backgroundColor = MaterialTheme.colors.background
+//        )
+//        {}
+        AnimatedVisibility(
+            visible = bottomBarState.value,
+            enter = slideInVertically(initialOffsetY = { it }, animationSpec = tween(
+                durationMillis = 300,
+                easing = LinearEasing
+            )),
+            exit = slideOutVertically(targetOffsetY = { it }, animationSpec = tween(
+                durationMillis = 300,
+                easing = LinearEasing
+            )),
+            content = {
         BottomNavigation(
             modifier = Modifier
                 .zIndex(2f)
                 .clip(shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)),
-            backgroundColor = Color(0xFFCDBEC8), elevation = 10.dp,
+            backgroundColor = MaterialTheme.colors.secondary, elevation = 10.dp,
         ) {
             screens.forEach { screen ->
                 AddItem(
                     screen = screen,
                     currentDestination = currentDestination,
-                    navController = navController
+                    navController = navController,
+                    bottomBarState = bottomBarState,
                 )
             }
-        }
+        }})
     }
 }
 
@@ -91,7 +120,8 @@ fun BottomBar(navController: NavHostController, mainViewModel: MainViewModel = h
 fun RowScope.AddItem(
     screen: BottomNavScreen,
     currentDestination: NavDestination?,
-    navController: NavHostController
+    navController: NavHostController,
+    bottomBarState: MutableState<Boolean>,
 ) {
     BottomNavigationItem(
         label = {
@@ -100,7 +130,8 @@ fun RowScope.AddItem(
         icon = {
             Icon(
                 imageVector = screen.icon,
-                contentDescription = "Navigation Icon"
+                contentDescription = "Navigation Icon",
+                tint = MaterialTheme.colors.primaryVariant
             )
         },
         selected = currentDestination?.hierarchy?.any {
@@ -108,6 +139,7 @@ fun RowScope.AddItem(
         } == true,
         unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
         onClick = {
+            bottomBarState.value = true
             navController.navigate(screen.route) {
                 popUpTo(navController.graph.findStartDestination().id)
                 launchSingleTop = true

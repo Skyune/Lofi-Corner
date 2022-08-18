@@ -1,4 +1,4 @@
-package com.skyune.loficorner.ui.main
+package com.skyune.loficorner.ui.mainScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +22,8 @@ class MainViewModel @Inject constructor(private val repository: WeatherRepositor
             return repository.getWeather()
 
         }
+
+
 
 
     private val _currentSong = MutableStateFlow<List<CurrentSong>>(emptyList())

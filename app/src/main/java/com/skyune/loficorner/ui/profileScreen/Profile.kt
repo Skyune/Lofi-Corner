@@ -1,15 +1,17 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.skyune.loficorner.ui
+package com.skyune.loficorner.ui.profileScreen
 
-import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -19,10 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
@@ -31,14 +31,20 @@ import com.skyune.loficorner.exoplayer.MusicServiceConnection
 import com.skyune.loficorner.model.CurrentSong
 import com.skyune.loficorner.model.Data
 import com.skyune.loficorner.model.Weather
-import com.skyune.loficorner.utils.playMusic
+import com.skyune.loficorner.ui.profileScreen.components.RoomImagesRow
 import com.skyune.loficorner.utils.playMusicFromId
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.sql.Types.NULL
 
 
+
 @Composable
-fun ProfileScreen(profileViewModel: ProfileViewModel = hiltViewModel(),
-                  musicServiceConnection: MusicServiceConnection) {
+fun ProfileScreen(
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    musicServiceConnection: MusicServiceConnection,
+    bottomBarState: MutableState<Boolean>
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,26 +53,81 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = hiltViewModel(),
         contentAlignment = Alignment.Center
     ) {
         val songList = profileViewModel.noteList.collectAsState().value
-        ShowData(profileViewModel, songList, musicServiceConnection)
+        ShowData(profileViewModel, songList, musicServiceConnection, bottomBarState)
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ShowData(profileViewModel: ProfileViewModel, songList: List<CurrentSong>,musicServiceConnection: MusicServiceConnection) {
+private fun LazyListState.isScrollingUp(): Boolean {
+    var previousIndex by remember(this) { mutableStateOf(firstVisibleItemIndex) }
+    var previousScrollOffset by remember(this) { mutableStateOf(firstVisibleItemScrollOffset) }
+    return remember(this) {
+        derivedStateOf {
+            if (previousIndex != firstVisibleItemIndex) {
+                previousIndex > firstVisibleItemIndex
+            } else {
+                previousScrollOffset >= firstVisibleItemScrollOffset
+            }.also {
+                previousIndex = firstVisibleItemIndex
+                previousScrollOffset = firstVisibleItemScrollOffset
+            }
+        }
+    }.value
+}
+@Composable
+fun ShowData(
+    profileViewModel: ProfileViewModel,
+    songList: List<CurrentSong>,
+    musicServiceConnection: MusicServiceConnection,
+    bottomBarState: MutableState<Boolean>,
+) {
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
         initialValue = DataOrException(loading = true)
     ) {
         value = profileViewModel.getWeatherData()
     }.value
 
+    val listState = rememberLazyListState()
+    val scrollingUp = listState.isScrollingUp()
+
+
+    Log.d("gag", "ShowData: scrollingUp: $scrollingUp")
+
     val isPlayerReady: MutableState<Boolean> = rememberSaveable{
         mutableStateOf(false)
     }
+          bottomBarState.value =  scrollingUp // If we're scrolling up, show the bottom bar
+
+
+    var rsp by remember { mutableStateOf(listState.firstVisibleItemScrollOffset) }
+    var isScrolling by remember { mutableStateOf(false) } // to keep track of the scroll-state
+
+//    LaunchedEffect(key1 = listState.firstVisibleItemScrollOffset){ //Recomposes every time the key changes
+//
+///*This block will also be executed
+// on the start of the program,
+// so you might want to handle
+// that with the help of another variable.*/
+//
+//        isScrolling = true // If control reaches here, we're scrolling
+//        bottomBarState.value = isScrolling && scrollingUp // If we're scrolling up, show the bottom bar
+//        launch{
+//            isScrolling = false
+//            delay(100) //If there's no scroll after a hundred seconds, update rsp
+//            if(!isScrolling){
+//                rsp = listState.firstVisibleItemScrollOffset
+//                Log.d("delay", "ShowData: ${isScrolling}")
+//
+//                /* Execute your trigger here,
+//                   this denotes the scrolling has stopped */
+//            }
+//        }
+//    }
 
     Box(
         modifier = Modifier
-            .fillMaxWidth().fillMaxHeight()
+            .fillMaxWidth()
+            .fillMaxHeight()
             .background(Color(0xFFC1AEB9)),
         contentAlignment = Alignment.Center,
 
@@ -76,16 +137,12 @@ fun ShowData(profileViewModel: ProfileViewModel, songList: List<CurrentSong>,mus
             CircularProgressIndicator()
         } else if (weatherData.data != null) {
 
-            LazyColumn(modifier = Modifier.padding(2.dp), contentPadding = PaddingValues(1.dp)) {
-               item {
-                   Text("here goes")
-               }
-                stickyHeader {
 
-                        Text("Your Lofi Corner,",
-                            style = MaterialTheme.typography.h4, fontWeight = FontWeight.Bold,
-                            fontSize= 20.sp)
-                }
+            //ParallaxImage(image = R.drawable.jazz, sensor = gravitySensorDefaulted )
+            LazyColumn(modifier = Modifier
+                .padding(2.dp), contentPadding = PaddingValues(1.dp), state = listState) {
+
+                item { RoomImagesRow() }
                 items(weatherData.data!!.data) { item ->
                     //wait... is this a bad idea to save every song in a room database?
                     //its not a bug its a feature
@@ -111,8 +168,9 @@ fun ShowData(profileViewModel: ProfileViewModel, songList: List<CurrentSong>,mus
 
             }
             //progress i guess
-            if(songList.isNotEmpty())
-            Text(songList.last().title)
+            if(songList.isNotEmpty()) {
+                //Text(songList.last().title)
+            }
 
         }
 
