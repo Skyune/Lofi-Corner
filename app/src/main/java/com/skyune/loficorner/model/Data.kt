@@ -1,5 +1,8 @@
 package com.skyune.loficorner.model
 
+import com.rld.justlisten.datalayer.models.UserModel
+import kotlinx.serialization.SerialName
+
 data class Data(
 
     val artwork: Artwork,

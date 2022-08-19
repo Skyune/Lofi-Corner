@@ -278,7 +278,7 @@ fun MediaMetadataCompat.toMediaItemMetadata(): MediaMetadata {
     return with(MediaMetadata.Builder()) {
         setTitle(title)
         setDisplayTitle(displayTitle)
-//        setAlbumArtist(artist)
+        setAlbumArtist(artist)
 //        setAlbumTitle(album)
 //        setComposer(composer)
 //        setTrackNumber(trackNumber.toInt())

@@ -1,5 +1,7 @@
 package com.skyune.loficorner.ui.homeScreen
 
+import android.media.session.PlaybackState
+import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.H
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -34,30 +37,95 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.skyune.loficorner.R
+import com.skyune.loficorner.exoplayer.MusicServiceConnection
 
-import com.skyune.loficorner.widgets.RoomImage
 import com.skyune.loficorner.widgets.RoundIconButton
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(musicServiceConnection: MusicServiceConnection) {
 
             Column(modifier = Modifier
+                .background(color = MaterialTheme.colors.primary)
                 .fillMaxSize()
                 .padding(30.dp, 0.dp, 30.dp, 4.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally) {
 
 
+                //Image(painter = painterResource(id = R.drawable.jazz), contentDescription = "jazzy" )
+                MarqueeText("Lorem", gradientEdgeColor = Color(0xFFFFC1AEB9))
+
+                    val shouldHavePlayBar by remember {
+                        derivedStateOf {
+                            musicServiceConnection.playbackState.value?.state == PlaybackState.STATE_PLAYING
+                                    || musicServiceConnection.playbackState.value?.state == PlaybackState.STATE_PAUSED
+                                    || musicServiceConnection.playbackState.value?.state == PlaybackState.STATE_SKIPPING_TO_NEXT
+                                    || musicServiceConnection.playbackState.value?.state == PlaybackState.STATE_BUFFERING
+                                    || musicServiceConnection.currentPlayingSong.value != null
+                        }
+                    }
 
 
+                    if (shouldHavePlayBar) {
 
-                    //Image(painter = painterResource(id = R.drawable.jazz), contentDescription = "jazzy" )
-            MarqueeText("Lorem", gradientEdgeColor = Color(0xFFFFC1AEB9))
+                        Log.d("TAG", "HomeScreen: exted")
+                        PlayerBarSheetContent(
+                            //onCollapsedClicked = { coroutineScope.launch { scaffoldState.bottomSheetState.collapse() } },
+                            //bottomPadding = bottomBarPadding,
+                            //currentFraction = scaffoldState.fraction,
+                            //isExtended = scaffoldState.bottomSheetState.isExpanded,
+                            onSkipNextPressed = { musicServiceConnection.transportControls.skipToNext() },
+                            musicServiceConnection = musicServiceConnection,
+//                        onFavoritePressed = { id, title, userModel, songIconList, isFavorite ->
+//                            events.saveSongToFavorites(
+//                                id,
+//                                title,
+//                                userModel,
+//                                songIconList,
+//                                isFavorite = isFavorite
+//                            )
+//                            updateFavorite(isFavorite, musicServiceConnection, id)
+//                    },
+                            //addPlaylistList = addPlaylistList.value,
+//                        onAddPlaylistClicked = { playlistName, playlistDescription ->
+//                            events.addPlaylist(playlistName, playlistDescription)
+//                            addPlaylistList.value = events.getPlaylist()
+//                        },
+//                        getLatestPlaylist = {
+//                            addPlaylistList.value = events.getPlaylist()
+//                        },
+//                        clickedToAddSongToPlaylist = { playlistTitle, playlistDescription, songList ->
+//                            val list = songList.toMutableList()
+//                            list.add(musicServiceConnection.currentPlayingSong.value?.id ?: "")
+//                            Toast.makeText(
+//                                context,
+//                                "The song was added to $playlistTitle",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                            events.updatePlaylistSongs(
+//                                playlistTitle,
+//                                playlistDescription,
+//                                list
+//                            )
+//                        },
+//                        newDominantColor = { color ->
+//                            updateStatusBarColor(
+//                                color,
+//                                scaffoldState.bottomSheetState.isExpanded &&
+//                                        scaffoldState.bottomSheetState.targetValue != BottomSheetValue.Collapsed
+//                            )
+//                        },
+//                        playBarMinimizedClicked = {
+//                            coroutineScope.launch { scaffoldState.bottomSheetState.expand() }
+//                        },
+//                        events = events
+                            isExtended = true, currentFraction = 1f
+                        )
 
-        }
+                    }
+            }
 
     }
 
@@ -119,7 +187,7 @@ fun MarqueeText(
     text: String,
     modifier: Modifier = Modifier,
     textModifier: Modifier = Modifier,
-    gradientEdgeColor: Color = Color.White,
+    gradientEdgeColor: Color,
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,
@@ -282,5 +350,5 @@ private data class TextLayoutInfo(val textWidth: Int, val containerWidth: Int)
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen()
+    //HomeScreen(musicServiceConnection)
 }

@@ -81,6 +81,7 @@ fun ShowData(
     musicServiceConnection: MusicServiceConnection,
     bottomBarState: MutableState<Boolean>,
 ) {
+
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
         initialValue = DataOrException(loading = true)
     ) {
@@ -97,6 +98,7 @@ fun ShowData(
         mutableStateOf(false)
     }
           bottomBarState.value =  scrollingUp // If we're scrolling up, show the bottom bar
+
 
 
     var rsp by remember { mutableStateOf(listState.firstVisibleItemScrollOffset) }
@@ -210,7 +212,7 @@ fun WeatherItem(item: Data, onItemClicked: () -> Unit) {
             )
             Column() {
                 Text(text = item.title.toString())
-                Text(text = item.user.name.toString())
+                //Text(text = item.user.name.toString())
             }
         }
     }

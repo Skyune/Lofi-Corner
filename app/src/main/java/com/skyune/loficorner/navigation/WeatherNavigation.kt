@@ -45,7 +45,7 @@ fun WeatherNavigation(
             )
         }
         composable(route = BottomNavScreen.Home.route) {
-            HomeScreen()
+            HomeScreen(musicServiceConnection = musicServiceConnection)
         }
         composable(route = BottomNavScreen.Profile.route) {
             ProfileScreen(profileViewModel = hiltViewModel(), musicServiceConnection,bottomBarState)
