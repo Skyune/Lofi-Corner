@@ -1,8 +1,11 @@
 package com.skyune.loficorner.ui.homeScreen
 
 import android.media.session.PlaybackState
+import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import androidx.compose.animation.core.*
+import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,10 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.H
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -37,14 +42,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Room
+import coil.ImageLoader
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
+import coil.size.Size
+import com.skyune.loficorner.R
 import com.skyune.loficorner.exoplayer.MusicServiceConnection
 
 import com.skyune.loficorner.widgets.RoundIconButton
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class,
+    ExperimentalAnimationGraphicsApi::class
+)
+
 @Composable
 fun HomeScreen(musicServiceConnection: MusicServiceConnection) {
+
+    MarqueeText("Lorem", gradientEdgeColor = Color(0xFFFFC1AEB9))
+
+
 
             Column(modifier = Modifier
                 .background(color = MaterialTheme.colors.primary)
@@ -69,6 +89,9 @@ fun HomeScreen(musicServiceConnection: MusicServiceConnection) {
 
 
                     if (shouldHavePlayBar) {
+                        room()
+
+                        //GifImage(Modifier.fillMaxSize())
 
                         Log.d("TAG", "HomeScreen: exted")
                         PlayerBarSheetContent(
@@ -156,6 +179,31 @@ fun SearchBar(
 }
 
 @Composable
+fun GifImage(
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val imageLoader = ImageLoader.Builder(context)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }
+        .build()
+    Image(
+        painter = rememberAsyncImagePainter(
+            ImageRequest.Builder(context).data(data = R.drawable.red).apply(block = {
+                size(Size.ORIGINAL)
+            }).build(), imageLoader = imageLoader
+        ),
+        contentDescription = null,
+        modifier = modifier,
+    )
+}
+
+@Composable
 fun CommonTextField(
     valueState: MutableState<String>,
                     placeholder: String,
@@ -187,7 +235,7 @@ fun MarqueeText(
     text: String,
     modifier: Modifier = Modifier,
     textModifier: Modifier = Modifier,
-    gradientEdgeColor: Color,
+    gradientEdgeColor: Color = Color.White,
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontStyle: FontStyle? = null,

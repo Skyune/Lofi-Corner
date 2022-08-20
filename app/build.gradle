@@ -57,6 +57,10 @@ dependencies {
     implementation ("com.google.android.exoplayer:extension-mediasession:2.18.1")
     implementation ("com.google.android.exoplayer:exoplayer-ui:2.18.1")
 
+    //
+    implementation("androidx.compose.animation:animation-graphics:1.1.0-alpha01")
+
+
     //Dagger - Hilt
     implementation 'com.google.dagger:hilt-android:2.39'
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
@@ -84,6 +88,8 @@ dependencies {
 
     // Coil
     implementation("io.coil-kt:coil-compose:1.4.0")
+    implementation "io.coil-kt:coil-compose:2.1.0"
+    implementation "io.coil-kt:coil-gif:2.1.0"
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -105,6 +111,8 @@ dependencies {
     //accompanist
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
     implementation "com.google.accompanist:accompanist-insets-ui:0.23.1"
+    implementation "com.google.accompanist:accompanist-drawablepainter:0.16.0"
+
 
     //serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")

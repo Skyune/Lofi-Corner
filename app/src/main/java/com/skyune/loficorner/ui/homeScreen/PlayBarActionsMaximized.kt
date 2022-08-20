@@ -1,5 +1,6 @@
 package com.skyune.loficorner.ui.homeScreen
 
+import android.graphics.drawable.AnimationDrawable
 import android.media.session.PlaybackState
 import android.support.v4.media.session.PlaybackStateCompat.*
 import androidx.compose.foundation.BorderStroke
