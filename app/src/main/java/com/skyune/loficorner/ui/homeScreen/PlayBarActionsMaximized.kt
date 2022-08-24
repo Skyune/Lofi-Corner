@@ -4,6 +4,7 @@ import android.graphics.drawable.AnimationDrawable
 import android.media.session.PlaybackState
 import android.support.v4.media.session.PlaybackStateCompat.*
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.*
 import androidx.compose.foundation.layout.*
@@ -12,6 +13,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -74,13 +76,14 @@ fun PlayBarActionsMaximized(
 
         Column(
             Modifier
-                .fillMaxSize()
-                .padding(bottom = bottomPadding + 5.dp),
+                .fillMaxSize().background(Color.Transparent)
+                .padding(bottom = bottomPadding + 5.dp,top = 5.dp),
             verticalArrangement = Arrangement.Bottom
         ) {
             MarqueeText(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 text = title,
+                style = MaterialTheme.typography.body1,
                 textAlign = TextAlign.Center, gradientEdgeColor = MaterialTheme.colors.primary)
             MarqueeText(
                 modifier = Modifier.align(Alignment.CenterHorizontally),

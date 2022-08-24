@@ -6,6 +6,9 @@ import com.skyune.loficorner.model.CurrentSong
 import com.skyune.loficorner.model.Weather
 import com.skyune.loficorner.network.WeatherApi
 import com.example.cleannote.data.NoteDatabaseDao
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(private val api: WeatherApi, private val noteDatabaseDao: NoteDatabaseDao) {
@@ -24,6 +27,9 @@ class WeatherRepository @Inject constructor(private val api: WeatherApi, private
 
     }
 
+     fun getMovieById(id: String): Call<Weather> {
+         return api.getMovieById(id)
+     }
 
     suspend fun addNote(currentSong: CurrentSong) = noteDatabaseDao.insert(currentSong)
     suspend fun getAllNotes() = noteDatabaseDao.getNotes()

@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Response
 import javax.inject.Inject
 
 @OptIn(InternalCoroutinesApi::class)
@@ -29,6 +31,11 @@ class ProfileViewModel @Inject constructor(private val repository: WeatherReposi
     suspend fun getSongData()
             : DataOrException<Weather, Boolean, Exception> {
         return repository.getWeather()
+
+    }
+
+     fun getMovieById(id: String) : Call<Weather> {
+        return repository.getMovieById(id)
 
     }
 

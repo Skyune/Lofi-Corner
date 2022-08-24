@@ -8,6 +8,7 @@ data class Data(
     val artwork: Artwork,
     val description: String,
     val downloadable: Boolean,
+    val playlist_name: String,
     val duration: Int,
     val favorite_count: Int,
     val genre: String,

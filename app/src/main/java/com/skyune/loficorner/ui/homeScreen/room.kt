@@ -21,7 +21,7 @@ fun room() {
     //This is dumb but it actually works so...
     Box(modifier = Modifier.zIndex(2f).wrapContentSize()) {
 
-        Image(modifier= Modifier.wrapContentSize().aspectRatio(1f),painter = painterResource(R.drawable.athlete), contentDescription = "")
+        Image(modifier= Modifier.wrapContentSize().aspectRatio(0.9f),painter = painterResource(R.drawable.jazz), contentDescription = "")
 
         Box(
             Modifier
@@ -32,17 +32,17 @@ fun room() {
             //Image(modifier= Modifier.fillMaxHeight(),painter = painterResource(R.drawable.run1), contentDescription = "")
 
             Row(modifier = Modifier.wrapContentSize()) {
-                Spacer(Modifier.weight(2.3f)) //left horizontal spacer
+                Spacer(Modifier.weight(2.4f)) //left horizontal spacer
                 Column(modifier = Modifier.wrapContentSize()) {
                     Spacer(Modifier.weight(2.2f)) //top vertical spacer
 //                    Image(
-//                        modifier = Modifier.weight(2f,true),
+//                        modifier = Modifier.weight(2.5f,true),
 //                        painter = painterResource(R.drawable.run1),
 //                        contentDescription = ""
 //                    )
-                   GifImage(modifier = Modifier.weight(2f))
+              //    GifImage(modifier = Modifier.weight(2.3f))
 
-                    Spacer(Modifier.weight(1f)) //bottom vertical spacer
+                    Spacer(Modifier.weight(1.1f)) //bottom vertical spacer
                 }
                 Spacer(modifier = Modifier.weight(0.4f)) //right horizontal spacer
             }

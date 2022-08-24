@@ -31,12 +31,15 @@ import com.skyune.loficorner.exoplayer.MusicServiceConnection
 import com.skyune.loficorner.model.CurrentSong
 import com.skyune.loficorner.model.Data
 import com.skyune.loficorner.model.Weather
+import com.skyune.loficorner.ui.homeScreen.WeatherItem
 import com.skyune.loficorner.ui.profileScreen.components.RoomImagesRow
 import com.skyune.loficorner.utils.playMusicFromId
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Response
 import java.sql.Types.NULL
-
+import javax.security.auth.callback.Callback
 
 
 @Composable
@@ -88,6 +91,8 @@ fun ShowData(
         value = profileViewModel.getWeatherData()
     }.value
 
+
+
     val listState = rememberLazyListState()
     val scrollingUp = listState.isScrollingUp()
 
@@ -101,30 +106,6 @@ fun ShowData(
 
 
 
-    var rsp by remember { mutableStateOf(listState.firstVisibleItemScrollOffset) }
-    var isScrolling by remember { mutableStateOf(false) } // to keep track of the scroll-state
-
-//    LaunchedEffect(key1 = listState.firstVisibleItemScrollOffset){ //Recomposes every time the key changes
-//
-///*This block will also be executed
-// on the start of the program,
-// so you might want to handle
-// that with the help of another variable.*/
-//
-//        isScrolling = true // If control reaches here, we're scrolling
-//        bottomBarState.value = isScrolling && scrollingUp // If we're scrolling up, show the bottom bar
-//        launch{
-//            isScrolling = false
-//            delay(100) //If there's no scroll after a hundred seconds, update rsp
-//            if(!isScrolling){
-//                rsp = listState.firstVisibleItemScrollOffset
-//                Log.d("delay", "ShowData: ${isScrolling}")
-//
-//                /* Execute your trigger here,
-//                   this denotes the scrolling has stopped */
-//            }
-//        }
-//    }
 
     Box(
         modifier = Modifier
@@ -137,34 +118,36 @@ fun ShowData(
 
         if (weatherData.loading == true) {
             CircularProgressIndicator()
-        } else if (weatherData.data != null) {
+        } else if (weatherData.data!!.data != null) {
 
 
-            //ParallaxImage(image = R.drawable.jazz, sensor = gravitySensorDefaulted )
             LazyColumn(modifier = Modifier
                 .padding(2.dp), contentPadding = PaddingValues(1.dp), state = listState) {
 
                 item { RoomImagesRow() }
                 items(weatherData.data!!.data) { item ->
-                    //wait... is this a bad idea to save every song in a room database?
-                    //its not a bug its a feature
-                    //you can probably implement previous and next buttons for LITERALLY every song played.
                     WeatherItem(item, onItemClicked = {
-                        if (isPlayerReady.value) {
-                            isPlayerReady.value = false
-                        }
-                        playMusicFromId(musicServiceConnection, weatherData.data!!.data, item.id, isPlayerReady.value)
-                        isPlayerReady.value = true
 
+                        val response : Call<Weather> = profileViewModel.getMovieById("${item.id}")
+                        response.enqueue(object : retrofit2.Callback<Weather> {
+                            override fun onFailure(call: Call<Weather>, t: Throwable) {
+                                Log.d("onFailure", t.message.toString())
+                            }
 
-                        profileViewModel.addNote(
-                            CurrentSong(
-                                NULL,
-                                item.id,
-                                item.duration,
-                                item.title
-                            )
-                        )
+                            override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
+                                Log.d("onResponse", response.body().toString())
+                                Log.d("apicallback", "ShowData: ${weatherData.data!!.data.toString()}")
+                                if (isPlayerReady.value) {
+                                    isPlayerReady.value = false
+
+                                }
+                                playMusicFromId(musicServiceConnection, response.body()!!.data, item.id, isPlayerReady.value)
+                                isPlayerReady.value = true
+
+                            }
+                        })
+//
+
                     })
                 }
 
@@ -173,6 +156,7 @@ fun ShowData(
             if(songList.isNotEmpty()) {
                 //Text(songList.last().title)
             }
+
 
         }
 
@@ -211,7 +195,7 @@ fun WeatherItem(item: Data, onItemClicked: () -> Unit) {
                 contentDescription = null
             )
             Column() {
-                Text(text = item.title.toString())
+                //(text = item.title)
                 //Text(text = item.user.name.toString())
             }
         }
