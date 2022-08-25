@@ -3,6 +3,7 @@ package com.skyune.loficorner.network
 import com.skyune.loficorner.model.Weather
 import com.skyune.loficorner.utils.Constants.appName
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import javax.inject.Singleton
@@ -15,5 +16,10 @@ interface WeatherApi {
     @GET("v1/playlists/{playlistId}/tracks?app_name=$appName")
     fun getMovieById(
         @Path("playlistId") id: String,
+    ): Call<Weather>
+
+    @GET("/v1/playlists/{playlist_id}?app_name=$appName")
+     fun getPlaylist(
+        @Path("playlist_id") id: String,
     ): Call<Weather>
 }

@@ -1,19 +1,21 @@
 package com.skyune.loficorner.ui.profileScreen
 
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skyune.loficorner.data.DataOrException
 import com.skyune.loficorner.model.CurrentSong
+import com.skyune.loficorner.model.Data
 import com.skyune.loficorner.model.Weather
 import com.skyune.loficorner.repository.WeatherRepository
 import com.yeocak.parallaximage.GravitySensorDefaulted
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
@@ -38,13 +40,21 @@ class ProfileViewModel @Inject constructor(private val repository: WeatherReposi
         return repository.getMovieById(id)
 
     }
+    fun getPlaylist(id: String) : Call<Weather> {
+        return repository.getPlaylist(id)
+
+    }
 
 
 
     private val _noteList = MutableStateFlow<List<CurrentSong>>(emptyList())
     var noteList = _noteList.asStateFlow()
 
-    init {
+    private val _playlist by mutableStateOf(emptyList<Data>())
+    var playlist = _playlist
+
+
+        init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllNotes().distinctUntilChanged()
                 .collect() {
@@ -53,8 +63,6 @@ class ProfileViewModel @Inject constructor(private val repository: WeatherReposi
         }
         //noteList.addAll(NotesDataSource().loadNotes())
     }
-
-
 
 
     fun addNote(song: CurrentSong) = viewModelScope.launch { repository.addNote(song) }

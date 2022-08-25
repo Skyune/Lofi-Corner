@@ -22,11 +22,16 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var gravitySensorDefaulted: GravitySensorDefaulted
 
+
+
+
     @Inject
     lateinit var application: WeatherApplication
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         gravitySensorDefaulted = GravitySensorDefaulted(this)
 
         val musicServiceConnection = (application as WeatherApplication).musicServiceConnection
@@ -37,7 +42,7 @@ class MainActivity : ComponentActivity() {
                 WeatherApp(onToggleTheme = { application.changeTheme(Theme.Light) },
                     onToggleDarkMode = { application.changeTheme(Theme.Dark) },
                     musicServiceConnection = musicServiceConnection,
-                    gravitySensorDefaulted = gravitySensorDefaulted
+                    gravitySensorDefaulted = gravitySensorDefaulted,
                 )
             }
         }
@@ -48,6 +53,7 @@ class MainActivity : ComponentActivity() {
 //this is probably a bad way to implement the theming, going to improve on this later.
 @Composable
 fun WeatherApp(
+
     onToggleTheme: () -> Unit,
     onToggleDarkMode: () -> Unit,
     musicServiceConnection: MusicServiceConnection,

@@ -21,11 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
+import com.google.android.exoplayer2.extractor.mp4.Track
 import com.skyune.loficorner.data.DataOrException
 import com.skyune.loficorner.exoplayer.MusicServiceConnection
 import com.skyune.loficorner.model.CurrentSong
@@ -34,12 +36,8 @@ import com.skyune.loficorner.model.Weather
 import com.skyune.loficorner.ui.homeScreen.WeatherItem
 import com.skyune.loficorner.ui.profileScreen.components.RoomImagesRow
 import com.skyune.loficorner.utils.playMusicFromId
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
-import java.sql.Types.NULL
-import javax.security.auth.callback.Callback
 
 
 @Composable
@@ -77,12 +75,16 @@ private fun LazyListState.isScrollingUp(): Boolean {
         }
     }.value
 }
+
+
+
+
 @Composable
 fun ShowData(
     profileViewModel: ProfileViewModel,
     songList: List<CurrentSong>,
     musicServiceConnection: MusicServiceConnection,
-    bottomBarState: MutableState<Boolean>,
+    bottomBarState: MutableState<Boolean>
 ) {
 
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
@@ -91,6 +93,17 @@ fun ShowData(
         value = profileViewModel.getWeatherData()
     }.value
 
+
+    val ctx = LocalContext.current
+
+    val userName = remember {
+        mutableStateOf(TextFieldValue())
+    }
+    val favourites = remember { mutableStateListOf<Data>() }
+
+    val resp = remember {
+        mutableStateOf("")
+    }
 
 
     val listState = rememberLazyListState()
@@ -104,6 +117,19 @@ fun ShowData(
     }
           bottomBarState.value =  scrollingUp // If we're scrolling up, show the bottom bar
 
+    val response : Call<Weather> = profileViewModel.getPlaylist("noPJL")
+    response.enqueue(object : retrofit2.Callback<Weather> {
+        override fun onFailure(call: Call<Weather>, t: Throwable) {
+            Log.d("onFailure", t.message.toString())
+        }
+
+        override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
+            Log.d("onResponse", response.body().toString())
+            if(response.isSuccessful) {
+                profileViewModel.playlist = response.body()!!.data
+            }
+        }
+    })
 
 
 
@@ -125,9 +151,18 @@ fun ShowData(
                 .padding(2.dp), contentPadding = PaddingValues(1.dp), state = listState) {
 
                 item { RoomImagesRow() }
-                items(weatherData.data!!.data) { item ->
-                    WeatherItem(item, onItemClicked = {
 
+                
+                item { profileViewModel.playlist.forEach {
+                    com.skyune.loficorner.ui.profileScreen.WeatherItem(item = it) {
+                        
+                    }
+                }
+                 }
+                items(weatherData.data!!.data) { item ->
+
+
+                    WeatherItem(item, onItemClicked = {
                         val response : Call<Weather> = profileViewModel.getMovieById("${item.id}")
                         response.enqueue(object : retrofit2.Callback<Weather> {
                             override fun onFailure(call: Call<Weather>, t: Throwable) {
@@ -135,22 +170,15 @@ fun ShowData(
                             }
 
                             override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
-                                Log.d("onResponse", response.body().toString())
-                                Log.d("apicallback", "ShowData: ${weatherData.data!!.data.toString()}")
                                 if (isPlayerReady.value) {
                                     isPlayerReady.value = false
-
                                 }
                                 playMusicFromId(musicServiceConnection, response.body()!!.data, item.id, isPlayerReady.value)
                                 isPlayerReady.value = true
-
                             }
                         })
-//
-
                     })
                 }
-
             }
             //progress i guess
             if(songList.isNotEmpty()) {
@@ -166,14 +194,6 @@ fun ShowData(
 
 
     }
-
-
-
-
-
-
-
-
 
 @Composable
 fun WeatherItem(item: Data, onItemClicked: () -> Unit) {
@@ -195,7 +215,7 @@ fun WeatherItem(item: Data, onItemClicked: () -> Unit) {
                 contentDescription = null
             )
             Column() {
-                //(text = item.title)
+                Text(text = item.playlist_name)
                 //Text(text = item.user.name.toString())
             }
         }

@@ -31,6 +31,10 @@ class WeatherRepository @Inject constructor(private val api: WeatherApi, private
          return api.getMovieById(id)
      }
 
+     fun getPlaylist(id: String): Call<Weather> {
+        return api.getPlaylist(id)
+    }
+
     suspend fun addNote(currentSong: CurrentSong) = noteDatabaseDao.insert(currentSong)
     suspend fun getAllNotes() = noteDatabaseDao.getNotes()
     suspend fun getLatestNote() = noteDatabaseDao.getLatest()

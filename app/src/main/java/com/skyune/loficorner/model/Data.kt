@@ -8,11 +8,11 @@ data class Data(
     val artwork: Artwork,
     val description: String,
     val downloadable: Boolean,
-    val playlist_name: String,
+    var playlist_name: String,
     val duration: Int,
     val favorite_count: Int,
     val genre: String,
-    val id: String,
+    var id: String,
     val mood: String,
     val permalink: String,
     val play_count: Int,
@@ -20,6 +20,6 @@ data class Data(
     val remix_of: RemixOf,
     val repost_count: Int,
     val tags: String,
-    val title: String,
+    var title: String,
     val user: User
 )

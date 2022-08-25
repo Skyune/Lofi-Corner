@@ -49,7 +49,7 @@ fun MainScreen(
 
 
     //Scaffold from Accompanist, initialized in build.gradle. (for hide bottom bar support)
-    com.google.accompanist.insets.ui.Scaffold(
+    Scaffold(
         bottomBar = { BottomBar(navController = navController, bottomBarState)  }
     ) {
 
