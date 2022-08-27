@@ -18,6 +18,7 @@ interface WeatherApi {
         @Path("playlistId") id: String,
     ): Call<Weather>
 
+
     @GET("/v1/playlists/{playlist_id}?app_name=$appName")
      fun getPlaylist(
         @Path("playlist_id") id: String,

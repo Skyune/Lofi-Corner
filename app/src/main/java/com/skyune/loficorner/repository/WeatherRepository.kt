@@ -31,7 +31,10 @@ class WeatherRepository @Inject constructor(private val api: WeatherApi, private
          return api.getMovieById(id)
      }
 
-     fun getPlaylist(id: String): Call<Weather> {
+
+    val playlistids = listOf("noPJL","n62mn")
+
+    fun getPlaylist(id: String): Call<Weather> {
         return api.getPlaylist(id)
     }
 

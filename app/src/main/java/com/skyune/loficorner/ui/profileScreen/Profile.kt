@@ -94,6 +94,7 @@ fun ShowData(
     }.value
 
 
+    var loaded = false
     val ctx = LocalContext.current
 
     val userName = remember {
@@ -117,22 +118,6 @@ fun ShowData(
     }
           bottomBarState.value =  scrollingUp // If we're scrolling up, show the bottom bar
 
-    val response : Call<Weather> = profileViewModel.getPlaylist("noPJL")
-    response.enqueue(object : retrofit2.Callback<Weather> {
-        override fun onFailure(call: Call<Weather>, t: Throwable) {
-            Log.d("onFailure", t.message.toString())
-        }
-
-        override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
-            Log.d("onResponse", response.body().toString())
-            if(response.isSuccessful) {
-                profileViewModel.playlist = response.body()!!.data
-            }
-        }
-    })
-
-
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,10 +126,10 @@ fun ShowData(
         contentAlignment = Alignment.Center,
 
         ) {
-
-        if (weatherData.loading == true) {
+//profileViewModel.myList.size != profileViewModel.playlistids.size
+        if (false) {
             CircularProgressIndicator()
-        } else if (weatherData.data!!.data != null) {
+        } else {
 
 
             LazyColumn(modifier = Modifier
@@ -152,33 +137,63 @@ fun ShowData(
 
                 item { RoomImagesRow() }
 
-                
-                item { profileViewModel.playlist.forEach {
-                    com.skyune.loficorner.ui.profileScreen.WeatherItem(item = it) {
-                        
-                    }
-                }
-                 }
-                items(weatherData.data!!.data) { item ->
 
-
-                    WeatherItem(item, onItemClicked = {
-                        val response : Call<Weather> = profileViewModel.getMovieById("${item.id}")
-                        response.enqueue(object : retrofit2.Callback<Weather> {
-                            override fun onFailure(call: Call<Weather>, t: Throwable) {
-                                Log.d("onFailure", t.message.toString())
-                            }
-
-                            override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
-                                if (isPlayerReady.value) {
-                                    isPlayerReady.value = false
+                items(profileViewModel.myList) { item ->
+                    com.skyune.loficorner.ui.profileScreen.WeatherItem(
+                        item = item,
+                        onItemClicked = {
+                            val response: Call<Weather> =
+                                profileViewModel.getMovieById(item.id)
+                            response.enqueue(object : retrofit2.Callback<Weather> {
+                                override fun onFailure(call: Call<Weather>, t: Throwable) {
+                                    Log.d("onFailure", t.message.toString())
                                 }
-                                playMusicFromId(musicServiceConnection, response.body()!!.data, item.id, isPlayerReady.value)
-                                isPlayerReady.value = true
-                            }
+
+                                override fun onResponse(
+                                    call: Call<Weather>,
+                                    response: Response<Weather>
+                                ) {
+                                    if (isPlayerReady.value) {
+                                        isPlayerReady.value = false
+                                    }
+                                    playMusicFromId(
+                                        musicServiceConnection,
+                                        response.body()!!.data,
+                                        item.id,
+                                        isPlayerReady.value
+                                    )
+                                    isPlayerReady.value = true
+                                }
+                            })
                         })
-                    })
                 }
+
+
+
+
+
+
+
+//                items(weatherData.data!!.data) { item ->
+//
+//
+//                    WeatherItem(item, onItemClicked = {
+//                        val response : Call<Weather> = profileViewModel.getMovieById("${item.id}")
+//                        response.enqueue(object : retrofit2.Callback<Weather> {
+//                            override fun onFailure(call: Call<Weather>, t: Throwable) {
+//                                Log.d("onFailure", t.message.toString())
+//                            }
+//
+//                            override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
+//                                if (isPlayerReady.value) {
+//                                    isPlayerReady.value = false
+//                                }
+//                                playMusicFromId(musicServiceConnection, response.body()!!.data, item.id, isPlayerReady.value)
+//                                isPlayerReady.value = true
+//                            }
+//                        })
+//                    })
+//                }
             }
             //progress i guess
             if(songList.isNotEmpty()) {
