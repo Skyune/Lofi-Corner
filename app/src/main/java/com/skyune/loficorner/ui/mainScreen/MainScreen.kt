@@ -27,6 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.skyune.loficorner.exoplayer.MusicServiceConnection
+import com.skyune.loficorner.model.Data
 import com.skyune.loficorner.navigation.WeatherNavigation
 import com.skyune.loficorner.ui.BottomNavScreen
 import com.yeocak.parallaximage.GravitySensorDefaulted
@@ -47,6 +48,9 @@ fun MainScreen(
 
     val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
 
+    val isLoaded = rememberSaveable { (mutableStateOf(false)) }
+
+    var myList: MutableList<Data> = mutableListOf<Data>()
 
     //Scaffold from Accompanist, initialized in build.gradle. (for hide bottom bar support)
     Scaffold(
@@ -58,7 +62,9 @@ fun MainScreen(
                 onToggleDarkMode,
                 musicServiceConnection,
                 gravitySensorDefaulted,
-                bottomBarState)
+                bottomBarState,
+                isLoaded,
+            myList)
 
     }
 

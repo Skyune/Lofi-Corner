@@ -8,12 +8,8 @@ import androidx.room.PrimaryKey
 data class CurrentSong (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String,
-    @ColumnInfo(name = "song_duration")
-    val duration: Int,
-    @ColumnInfo(name = "song_name")
-    val title: String,
-    //val user: String
+    @ColumnInfo(name = "songId")
+    val songId: String
 )
 
 

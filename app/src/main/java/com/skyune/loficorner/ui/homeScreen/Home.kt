@@ -62,7 +62,6 @@ import kotlinx.coroutines.delay
 @Composable
 fun HomeScreen(musicServiceConnection: MusicServiceConnection) {
 
-    MarqueeText("Lorem", gradientEdgeColor = Color(0xFFFFC1AEB9))
 
 
 

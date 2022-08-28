@@ -8,10 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -21,19 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
-import com.google.android.exoplayer2.extractor.mp4.Track
 import com.skyune.loficorner.data.DataOrException
 import com.skyune.loficorner.exoplayer.MusicServiceConnection
-import com.skyune.loficorner.model.CurrentSong
 import com.skyune.loficorner.model.Data
 import com.skyune.loficorner.model.Weather
-import com.skyune.loficorner.ui.homeScreen.WeatherItem
 import com.skyune.loficorner.ui.profileScreen.components.RoomImagesRow
 import com.skyune.loficorner.utils.playMusicFromId
 import retrofit2.Call
@@ -44,7 +37,9 @@ import retrofit2.Response
 fun ProfileScreen(
     profileViewModel: ProfileViewModel = hiltViewModel(),
     musicServiceConnection: MusicServiceConnection,
-    bottomBarState: MutableState<Boolean>
+    bottomBarState: MutableState<Boolean>,
+    isLoaded: MutableState<Boolean>,
+    myList: MutableList<Data>
 ) {
     Box(
         modifier = Modifier
@@ -53,8 +48,7 @@ fun ProfileScreen(
             .background(MaterialTheme.colors.primary),
         contentAlignment = Alignment.Center
     ) {
-        val songList = profileViewModel.noteList.collectAsState().value
-        ShowData(profileViewModel, songList, musicServiceConnection, bottomBarState)
+        ShowData(profileViewModel,  musicServiceConnection, bottomBarState, isLoaded, myList)
     }
 }
 
@@ -82,30 +76,40 @@ private fun LazyListState.isScrollingUp(): Boolean {
 @Composable
 fun ShowData(
     profileViewModel: ProfileViewModel,
-    songList: List<CurrentSong>,
     musicServiceConnection: MusicServiceConnection,
-    bottomBarState: MutableState<Boolean>
+    bottomBarState: MutableState<Boolean>,
+    isLoaded: MutableState<Boolean>,
+    myList: MutableList<Data>
 ) {
+
+    Log.d("WTF", "ShowData: ${isLoaded.value}")
+    if(!isLoaded.value)
+        for (i in profileViewModel.playlistids.indices) {
+
+            val response: Call<Weather> = profileViewModel.getPlaylist(profileViewModel.playlistids[i])
+            response.enqueue(object : retrofit2.Callback<Weather> {
+                override fun onFailure(call: Call<Weather>, t: Throwable) {
+                    Log.d("onFailure", t.message.toString())
+                }
+
+                override fun onResponse(call: Call<Weather>, response: Response<Weather>) {
+                    Log.d("onResponse", response.body().toString())
+                    if (response.isSuccessful) {
+                        myList.add(response.body()!!.data[0])
+
+                    }
+                }
+            })
+
+            isLoaded.value = true
+        }
+
 
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
         initialValue = DataOrException(loading = true)
     ) {
         value = profileViewModel.getWeatherData()
     }.value
-
-
-    var loaded = false
-    val ctx = LocalContext.current
-
-    val userName = remember {
-        mutableStateOf(TextFieldValue())
-    }
-    val favourites = remember { mutableStateListOf<Data>() }
-
-    val resp = remember {
-        mutableStateOf("")
-    }
-
 
     val listState = rememberLazyListState()
     val scrollingUp = listState.isScrollingUp()
@@ -126,20 +130,15 @@ fun ShowData(
         contentAlignment = Alignment.Center,
 
         ) {
-//profileViewModel.myList.size != profileViewModel.playlistids.size
-        if (false) {
-            CircularProgressIndicator()
-        } else {
+
+
 
 
             LazyColumn(modifier = Modifier
                 .padding(2.dp), contentPadding = PaddingValues(1.dp), state = listState) {
-
                 item { RoomImagesRow() }
-
-
-                items(profileViewModel.myList) { item ->
-                    com.skyune.loficorner.ui.profileScreen.WeatherItem(
+                items(myList) { item ->
+                    WeatherItem(
                         item = item,
                         onItemClicked = {
                             val response: Call<Weather> =
@@ -168,12 +167,6 @@ fun ShowData(
                         })
                 }
 
-
-
-
-
-
-
 //                items(weatherData.data!!.data) { item ->
 //
 //
@@ -196,9 +189,7 @@ fun ShowData(
 //                }
             }
             //progress i guess
-            if(songList.isNotEmpty()) {
-                //Text(songList.last().title)
-            }
+
 
 
         }
@@ -208,7 +199,7 @@ fun ShowData(
 
 
 
-    }
+
 
 @Composable
 fun WeatherItem(item: Data, onItemClicked: () -> Unit) {
